@@ -1,4 +1,4 @@
-from flask import Flask, render_template,request,redirect
+from flask import Flask, render_template,request,redirect, make_response
 import random 
 import psycopg2
 import hash
@@ -42,13 +42,30 @@ def check():
     password_db = db_user[0][2]
     check = hash.verify_password(password, password_db)
     if check==True:
-        return redirect("/profil")
+        resp = make_response(redirect("/profil"))
+        print(db_user)
+        resp.set_cookie('user',str(db_user[0][0]))
+        return resp
     else:
         return "неверный пароль"
     
 @app.route('/profil')
 def profil():
-    return "this is your profil )))"
+    if request.cookies.get('user') is not None:
+        id = int(request.cookies.get('user'))
+        cursor.execute("SELECT id_contact FROM contacts WHERE id_user = %s;",(id,))
+        all_user_contacts = cursor.fetchall()
+        
+        result = []
+        for i in all_user_contacts:
+            print(i)
+            cursor.execute("SELECT username FROM users WHERE id = %s;",(i[0],))
+            user = cursor.fetchall()
+            result.append(user[0])
+       
+        return render_template("profil.html", all_conact= result)
+    else:
+        return "неавторизованный пользватель"
 
 
 
