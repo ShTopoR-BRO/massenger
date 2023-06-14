@@ -63,12 +63,36 @@ def profil():
             user = cursor.fetchall()
             result.append(user[0])
        
+        
+       
         return render_template("profil.html", all_conact= result)
     else:
         return "неавторизованный пользватель"
 
+@app.route('/sendMess',methods=["post"])
+def send():
+    id = random.randint(100, 100000)
+    chat=request.form.get("chat")
+    sendler = int(request.cookies.get('user'))
+    resept = request.form.get("resepter")
+    cursor.execute("SELECT id FROM users WHERE username = %s;",(resept,))
+    resept=cursor.fetchall()[0][0]
+    cursor.execute("INSERT INTO dialogs VALUES(%s,%s,%s,%s);",(id, sendler, resept, chat))
+    connection.commit()
+    return redirect("/profil")
 
 
+@app.route('/chat/<username>')
+def chat(username):
+    sendler = int(request.cookies.get('user'))
+    cursor.execute("SELECT id FROM users WHERE username = %s;",(username,))
+    resept=cursor.fetchall()[0][0]
+    cursor.execute("SELECT chat FROM dialogs WHERE (id_res = %s and id_send = %s) or (id_send = %s and id_res = %s);",(sendler,resept,sendler,resept))
+    result = cursor.fetchall()
+    return render_template("chat.html", all_messages = result)
+
+    
+    
 
 
 
