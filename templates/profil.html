@@ -7,23 +7,9 @@
     <title>Document</title>
 </head>
 <body>
-    <form method="post" action="/sendMess" >
-        <input type="text" name="resepter" placeholder="имя получателя">
-        <input type="text" name="chat" placeholder="введите сообщение">
-        <input type="submit" name="send"> 
-    </form>
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
     {% for i in all_conact %}
     <a href="/chat/{{i[0]}}">{{i[0]}}</a><br>
     {% endfor %}
+    
 </body>
 </html>

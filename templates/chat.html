@@ -7,6 +7,13 @@
     <title>Document</title>
 </head>
 <body>
-    {{all_messages}}
+    {% for i in all_messages %}
+    <h4>{{i[0]}}</h4><br>
+    {% endfor %}
+    <form method="post" action="/sendMess/{{chat_with}}" >
+        <input type="text" name="chat" placeholder="введите сообщение">
+        <input type="submit" name="send"> 
+    </form>
+   
 </body>
 </html>

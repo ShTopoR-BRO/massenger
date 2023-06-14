@@ -69,17 +69,17 @@ def profil():
     else:
         return "неавторизованный пользватель"
 
-@app.route('/sendMess',methods=["post"])
-def send():
+@app.route('/sendMess/<username>',methods=["post"])
+def send(username):
     id = random.randint(100, 100000)
     chat=request.form.get("chat")
     sendler = int(request.cookies.get('user'))
-    resept = request.form.get("resepter")
+    resept = username
     cursor.execute("SELECT id FROM users WHERE username = %s;",(resept,))
     resept=cursor.fetchall()[0][0]
     cursor.execute("INSERT INTO dialogs VALUES(%s,%s,%s,%s);",(id, sendler, resept, chat))
     connection.commit()
-    return redirect("/profil")
+    return redirect("/chat/"+username)
 
 
 @app.route('/chat/<username>')
@@ -89,7 +89,7 @@ def chat(username):
     resept=cursor.fetchall()[0][0]
     cursor.execute("SELECT chat FROM dialogs WHERE (id_res = %s and id_send = %s) or (id_send = %s and id_res = %s);",(sendler,resept,sendler,resept))
     result = cursor.fetchall()
-    return render_template("chat.html", all_messages = result)
+    return render_template("chat.html", all_messages = result,chat_with = username)
 
     
     
