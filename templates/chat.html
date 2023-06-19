@@ -5,15 +5,42 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h4 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"],
+        input[type="submit"] {
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+        }
+
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        form {
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
     {% for i in all_messages %}
     <h4>{{i[0]}}</h4><br>
     {% endfor %}
-    <form method="post" action="/sendMess/{{chat_with}}" >
+    <form method="post" action="/sendMess/{{chat_with}}">
         <input type="text" name="chat" placeholder="введите сообщение">
         <input type="submit" name="send"> 
     </form>
-   
 </body>
 </html>

@@ -113,7 +113,11 @@ def add_contact():
     return redirect("/profil")    
 
 
-
+@app.route('/exit', methods=["get"])
+def exit():
+    resp = make_response(redirect("/singIn"))
+    resp.set_cookie('user', '', max_age=0)
+    return resp
 
 
 
