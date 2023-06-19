@@ -10,6 +10,9 @@
     {% for i in all_conact %}
     <a href="/chat/{{i[0]}}">{{i[0]}}</a><br>
     {% endfor %}
-    
+    <form action="/add_contact" method="post">
+        <input type="text" name="contact" placeholder="введи контакт">
+        <input type="submit" value="add contact">
+    </form>
 </body>
 </html>

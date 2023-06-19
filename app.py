@@ -19,6 +19,9 @@ def hello():
 @app.route('/create',methods=["post"])
 def create():
     login=request.form.get("login")
+    cursor.execute("SELECT * FROM users WHERE username = %s;",(login,))
+    if cursor.fetchall() != []:
+        return render_template("error.html")
     password = request.form.get("password")
     password = hash.hash_password(password) 
     id = random.randint(100, 100000)
@@ -39,11 +42,12 @@ def check():
     password = request.form.get("password")
     cursor.execute("SELECT * FROM users WHERE username = %s;",(login,))
     db_user = cursor.fetchall()
+    if db_user == []:
+        return "такого пользователя не существует"
     password_db = db_user[0][2]
     check = hash.verify_password(password, password_db)
     if check==True:
         resp = make_response(redirect("/profil"))
-        print(db_user)
         resp.set_cookie('user',str(db_user[0][0]))
         return resp
     else:
@@ -73,6 +77,8 @@ def profil():
 def send(username):
     id = random.randint(100, 100000)
     chat=request.form.get("chat")
+    if chat == "":
+        return render_template("error.html")
     sendler = int(request.cookies.get('user'))
     resept = username
     cursor.execute("SELECT id FROM users WHERE username = %s;",(resept,))
@@ -92,7 +98,19 @@ def chat(username):
     return render_template("chat.html", all_messages = result,chat_with = username)
 
     
-    
+@app.route('/add_contact', methods=["post"])
+def add_contact():
+    contact = request.form.get("contact")
+    id = random.randint(100, 100000)
+    owner = int(request.cookies.get('user'))
+    resept = contact
+    cursor.execute("SELECT id FROM users WHERE username = %s;",(resept,))
+    if  cursor.fetchall() == []:
+        return render_template("error.html")
+    resept=cursor.fetchall()[0][0]   
+    cursor.execute("INSERT INTO contacts VALUES(%s,%s,%s);",(id, owner, resept))
+    connection.commit()
+    return redirect("/profil")    
 
 
 
